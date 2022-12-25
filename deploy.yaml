@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment #type of opject
+metadata: 
+  name: ghw-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels: #tells deployment controller whick pod to manage 
+      event: ghw
+  minReadySeconds: 10 #this instructs kubernetes to update the second pod after 10 seconds of updating the first pod
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate: 
+      maxSurge: 1
+      maxUnavailable: 0
+  template: #add this label to new pods
+    metadata:
+      labels:
+        event: ghw #helps in tracking
+    spec:
+      containers:
+      - name: ghw-pod
+        ports:
+        - containerPort: 8080
+        image: vaanipathariya/ghw:1.1
+        #everything from containers till here is about the container
+        #everything from here to template is about my pod and everything upp till whole makes the deployment
